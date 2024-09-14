@@ -75,7 +75,7 @@ export const LogOut = async (req, res) => {
   const userId = user.uuid;
   await Users.update(
     {
-      refresh_token: refreshToken,
+      refresh_token: null,
     },
     {
       where: {

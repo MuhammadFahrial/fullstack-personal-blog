@@ -7,7 +7,7 @@ export const verifyToken = (req, res, next) => {
   if (token == null) return res.status(401);
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ msg: "Token tidak valid" });
+    if (err) return res.sendStatus(403);
 
     req.email = decoded.email;
     next();
@@ -20,7 +20,7 @@ export const adminOnly = (req, res, next) => {
 
   if (token == null) return res.status(401);
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ msg: "Token tidak valid" });
+    if (err) return res.sendStatus(403);
     req.role = decoded.role;
     if (req.role !== "admin")
       return res.status(403).json({ msg: "Akses dilarang" });
