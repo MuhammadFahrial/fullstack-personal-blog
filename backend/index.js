@@ -7,7 +7,7 @@ import UserRoute from "./routes/UserRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 import dotenv from "dotenv";
 import db from "./config/Database.js";
-import { adminOnly, verifyToken } from "./middleware/verifyToken.js";
+import { adminOnly } from "./middleware/verifyToken.js";
 
 dotenv.config();
 const app = express();
