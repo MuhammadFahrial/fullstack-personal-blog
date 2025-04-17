@@ -35,6 +35,8 @@ const FormAddPost = () => {
         }
       );
       alert("Upload Success");
+      setTitle("");
+      setContent("");
       return response.data;
     } catch (error) {
       console.log(error.response);
@@ -74,7 +76,7 @@ const FormAddPost = () => {
         </div>
         <div>
           <button type="submit" className="btn btn-success text-white">
-            Simpan
+            Save
           </button>
         </div>
       </form>
