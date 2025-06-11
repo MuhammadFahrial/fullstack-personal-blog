@@ -1,11 +1,15 @@
-import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addPost } from "../../../features/PostsSlice";
+import { getPosts } from "../../../features/PostsSlice";
 
 const FormAddPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
+
+  const dispatch = useDispatch();
 
   const loadImage = (e) => {
     const image = e.target.files[0];
@@ -21,25 +25,17 @@ const FormAddPost = () => {
     formData.append("content", content);
     formData.append("file", file);
 
-    const token = sessionStorage.getItem("token");
-
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/posts`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      alert("Upload Success");
+      dispatch(addPost(formData)).unwrap();
       setTitle("");
       setContent("");
-      return response.data;
+      setFile(null);
+      setPreview("");
+      alert("Post added successfully!");
+      dispatch(getPosts());
     } catch (error) {
-      console.log(error.response);
+      console.error("Failed to add post:", error);
+      alert("Failed to add post: " + error.message);
     }
   };
 

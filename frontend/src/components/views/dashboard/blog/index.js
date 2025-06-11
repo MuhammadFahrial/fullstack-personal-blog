@@ -3,8 +3,8 @@ import LayoutDashboard from "../../../template/LayoutDashboard";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts } from "../../../features/PostsSlice";
-import axios from "axios";
 import FormAddPost from "./FormAddPost";
+import { deletePost } from "../../../features/PostsSlice";
 
 const BlogDasboard = () => {
   const dispatch = useDispatch();
@@ -18,14 +18,15 @@ const BlogDasboard = () => {
   }, [dispatch]);
 
   const handleDeletePosts = async (postId) => {
-    const token = sessionStorage.getItem("token");
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+
     try {
-      await axios.delete(`${process.env.REACT_APP_API_URL}/posts/${postId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      dispatch(deletePost(postId)).unwrap();
+      alert("Post deleted successfully!");
       dispatch(getPosts());
     } catch (error) {
-      console.log(error.message);
+      console.error("Failed to delete post:", error);
+      alert("Failed to delete post: " + error.message);
     }
   };
 
@@ -44,9 +45,7 @@ const BlogDasboard = () => {
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button, it will close the modal */}
-              <button className="btn" onClick={() => dispatch(getPosts())}>
-                Close
-              </button>
+              <button className="btn">Close</button>
             </form>
           </div>
         </div>

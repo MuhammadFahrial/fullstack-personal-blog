@@ -2,6 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LayoutDashboard from "../../../template/LayoutDashboard";
+import { useDispatch } from "react-redux";
+import { updatePost } from "../../../features/PostsSlice";
+import { getPosts } from "../../../features/PostsSlice";
 
 const FormEditPost = () => {
   const [title, setTitle] = useState("");
@@ -9,6 +12,7 @@ const FormEditPost = () => {
   const [file, setFile] = useState("");
   const [preview, setPreview] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
 
   useEffect(() => {
@@ -33,7 +37,7 @@ const FormEditPost = () => {
     setPreview(URL.createObjectURL(image));
   };
 
-  const updatePost = async (e) => {
+  const saveUpdatePost = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -41,19 +45,13 @@ const FormEditPost = () => {
     formData.append("content", content);
     formData.append("file", file);
 
-    const token = sessionStorage.getItem("token");
-
     try {
-      await axios.patch(`http://localhost:5000/posts/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      navigate("/dashboard/blog");
-      alert("Update Success");
+      dispatch(updatePost({ id, formData })).unwrap();
+      dispatch(getPosts());
+      alert("Post updated successfully!");
     } catch (error) {
-      console.log(error);
+      console.error("Failed to update post:", error);
+      alert("Failed to update post: " + error.message);
     }
   };
 
@@ -61,7 +59,7 @@ const FormEditPost = () => {
     <LayoutDashboard>
       <dialog id="my_modal_4" className="modal">
         <div className="modal-box w-11/12 max-w-5xl">
-          <form onSubmit={updatePost} className="join join-vertical w-full">
+          <form onSubmit={saveUpdatePost} className="join join-vertical w-full">
             <div className="join join-vertical mb-4">
               <label>Title</label>
               <input
