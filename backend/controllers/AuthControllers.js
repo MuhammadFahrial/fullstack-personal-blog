@@ -14,9 +14,7 @@ export const Login = async (req, res) => {
     if (!match) return res.status(400).json({ msg: "Wrong Password" });
 
     const userId = user.uuid;
-    const name = user.name;
-    const email = user.email;
-    const role = user.role;
+    const { name, email, role } = user;
 
     const accessToken = jwt.sign(
       {

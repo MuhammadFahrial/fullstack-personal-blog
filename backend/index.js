@@ -12,6 +12,8 @@ import { adminOnly } from "./middleware/verifyToken.js";
 dotenv.config();
 const app = express();
 
+const PORT = process.env.PORT || 5000;
+
 try {
   await db.authenticate();
 } catch (error) {
@@ -39,7 +41,7 @@ app.use(AuthRoute);
 app.use(PostRoute);
 
 try {
-  app.listen(5000, () => console.log("Server up and running..."));
-} catch (error) {
+  app.listen(PORT, () => console.log("Server up and running..."));
+} catch (err) {
   console.error("Unable to connect to the database:", err);
 }
